@@ -1,0 +1,83 @@
+[
+    {
+        "id":1,
+        "prompt":"def add(a,b):\n    return a+b",
+        "description":"Adds two numbers",
+        "test":"assert add(5,67)==72\nassert add(4,-4)==0\nassert add(0,0)==0\nassert add(7,-2)==5\nprint('pass')"
+                
+
+    },
+    {
+        "id":2,
+        "prompt":"def subtract(a,b):",
+        "description":"Subtracts two numbers",
+        "test":"assert subtract(5,67)==-62\n assert subtract(4,-4)==8\n assert subtract(0,0)==0\n assert subtract(7,-2)==9\n print('pass')"
+                
+
+    },
+    {
+        "id":3,
+        "prompt":"def multiply(a,b):",
+        "description":"Multiplies two numbers",
+        "test":"assert multiply(5,67)==335\n assert multiply(4,-4)==-16\n assert multiply(0,0)==0\n assert multiply(7,-2)==-14\n print('pass')"
+                
+
+    },
+    {
+        "id":4,
+        "prompt":"def is_even(a):",
+        "description":"Checks whether a number is even",
+        "test":"assert is_even(60)==True\n assert is_even(-4)==True\n assert is_even(3)==False\n assert is_even(-5)==False\n print('pass')"
+                
+
+    },
+    {
+        "id":5,
+        "prompt":"def reverse_string(a):",
+        "description":"Reverses a string",
+        "test":"assert reverse_string('hello')=='olleh'\n assert reverse_string('suossous')=='suossous'\n assert reverse_string('')=='\n assert reverse_string('a')=='a'\n print('pass')"
+                
+
+    },
+    {
+        "id":6,
+        "prompt":"def max(a,b):",
+        "description":"Maximum of  two numbers",
+        "test":"assert max(5,67)==67\n assert max(4,-4)==4\n assert max(0,0)==0\n assert max(-7,-2)==-2\n print('pass')"
+                
+
+    },
+    {
+        "id":7,
+        "prompt":"def vowels(s):",
+        "description":"Counts vowels {a,e,i,o,u} in a string",
+        "test":"assert vowels('hello')==2\n assert vowels('aeiou')==5\n assert vowels('bcdfg')==0\n assert vowels('') == 0\n print('pass')"
+                
+
+    },
+    {
+        "id":8,
+        "prompt":"def is_prime(a):",
+        "description":"Checks whether a number is prime or not",
+        "test":"assert is_prime(5)==True\n assert is_prime(2)==True\n assert is_prime(0)==False\n assert is_prime(1)==False\n print('pass')"
+                
+
+    },
+        {
+        "id":9,
+        "prompt":"def factorial(b):",
+        "description":"Calculates the factorial of a number",
+        "test":"assert factorial(6)==720\n assert factorial(4)==24\n assert factorial(0)==1\n assert factofibonacci(\n print('pass')"
+                
+
+    },
+    {
+        "id":10,
+        "prompt":"deffibonacci(n):",
+        "description":"Returns the nth fibonacci number (0 indexed)",
+        "test":"assert fibonacci(0)==0\n assertfibonacci(1)==1\n assertfibonacci(4)==3\n assert fibonacci(7)==13\n print('pass')"
+                
+
+    }
+    
+]

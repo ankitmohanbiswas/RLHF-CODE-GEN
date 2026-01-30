@@ -107,5 +107,5 @@ assert reward==-0.5
 print("Test 5 Passed")
 
 print("=" * 60)
-print("🎉 ALL TESTS PASSED!")
+print(" ALL TESTS PASSED!")
 print("=" * 60)
