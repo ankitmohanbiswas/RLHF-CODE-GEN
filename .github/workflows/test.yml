@@ -1,1 +1,33 @@
+name: Test RLHF Code Generator
 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Test executor
+      run: |
+        python -m pytest tests/ -v
+    
+    - name: Test API
+      run: |
+        python src/api.py &
+        sleep 5
+        curl http://localhost:8000/health
