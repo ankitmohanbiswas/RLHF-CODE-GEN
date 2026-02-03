@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLHF Code Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .panel {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+        }
+        
+        .panel h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        select, textarea, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Segoe UI', sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+        
+        .result {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            margin-top: 15px;
+            min-height: 100px;
+        }
+        
+        .success {
+            border-color: #4caf50;
+            background: #f1f8f4;
+        }
+        
+        .error {
+            border-color: #f44336;
+            background: #fef1f0;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 RLHF Code Generator</h1>
+            <p>AI-powered code generation trained with Reinforcement Learning</p>
+        </div>
+        
+        <div class="content">
+            <div class="panel">
+                <h2>📝 Select Problem</h2>
+                <select id="problemSelect">
+                    <option value="">Loading...</option>
+                </select>
+                
+                <div id="problemDesc" style="margin: 20px 0; padding: 15px; background: white; border-radius: 8px;">
+                    Select a problem to see details
+                </div>
+                
+                <button onclick="generateCode()">✨ Generate Code</button>
+                
+                <h2 style="margin-top: 30px;">📤 Generated Code</h2>
+                <textarea id="generatedCode" placeholder="Code will appear here..."></textarea>
+                
+                <button onclick="testCode()">✅ Test Code</button>
+            </div>
+            
+            <div class="panel">
+                <h2>📊 Results</h2>
+                <div id="results" class="result">
+                    <p style="color: #666;">Results will appear here...</p>
+                </div>
+                
+                <h2 style="margin-top: 30px;">📈 Statistics</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3 id="attempted">0</h3>
+                        <p>Attempted</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="solved">0</h3>
+                        <p>Solved</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="rate">0%</h3>
+                        <p>Success Rate</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let problems = [];
+        let stats = { attempted: 0, solved: 0 };
+
+        // Load problems on page load
+        async function loadProblems() {
+            const res = await fetch(`${API_URL}/problems`);
+            const data = await res.json();
+            problems = data.problems;
+            
+            const select = document.getElementById('problemSelect');
+            select.innerHTML = problems.map(p => 
+                `<option value="${p.id}">${p.id}. ${p.description}</option>`
+            ).join('');
+            
+            select.onchange = () => {
+                const problem = problems.find(p => p.id == select.value);
+                document.getElementById('problemDesc').innerHTML = `
+                    <strong>Prompt:</strong><br>
+                    <pre>${problem.prompt}</pre>
+                `;
+            };
+        }
+
+        async function generateCode() {
+            const select = document.getElementById('problemSelect');
+            const problem = problems.find(p => p.id == select.value);
+            
+            if (!problem) return alert('Select a problem first');
+            
+            const res = await fetch(`${API_URL}/generate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: problem.prompt })
+            });
+            
+            const data = await res.json();
+            document.getElementById('generatedCode').value = data.code;
+        }
+
+        async function testCode() {
+            const code = document.getElementById('generatedCode').value;
+            const problemId = parseInt(document.getElementById('problemSelect').value);
+            
+            if (!code) return alert('No code to test');
+            
+            stats.attempted++;
+            
+            const res = await fetch(`${API_URL}/evaluate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code, problem_id: problemId })
+            });
+            
+            const data = await res.json();
+            const resultsDiv = document.getElementById('results');
+            
+            if (data.success) {
+                stats.solved++;
+                resultsDiv.className = 'result success';
+                resultsDiv.innerHTML = `
+                    <h3 style="color: #4caf50;">✅ All Tests Passed!</h3>
+                    <p>Reward: ${data.reward}</p>
+                `;
+            } else {
+                resultsDiv.className = 'result error';
+                resultsDiv.innerHTML = `
+                    <h3 style="color: #f44336;">❌ Tests Failed</h3>
+                    <p>Reward: ${data.reward}</p>
+                    <pre style="background: #fef1f0; color: #d32f2f;">${data.error || 'Unknown error'}</pre>
+                `;
+            }
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('attempted').textContent = stats.attempted;
+            document.getElementById('solved').textContent = stats.solved;
+            const rate = stats.attempted > 0 ? (stats.solved / stats.attempted * 100).toFixed(1) : 0;
+            document.getElementById('rate').textContent = rate + '%';
+        }
+
+        loadProblems();
+    </script>
+</body>
+</html><nav></nav>

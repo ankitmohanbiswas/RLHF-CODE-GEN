@@ -50,7 +50,7 @@ def simple_rlhf_training(num_epochs=3):
         for i ,problem in enumerate(problems):
             best_R=-float('inf')
             best_code=None
-            
+            flag=False
             for i in range(3):
                 generated_code=gen_code(model,tokenizer,problem['prompt'], max_length=150)
                 print(f"DEBUG {generated_code[:200]}")
@@ -60,8 +60,10 @@ def simple_rlhf_training(num_epochs=3):
                 if reward>best_R:
                     best_R=reward
                     best_code=generated_code
-                if success:
+                if success and not flag:
                     epoch_successes+=1
+                    flag=True
+                    break
             epoch_rewards.append(best_R)
     avg_rewards=sum(epoch_rewards)/len(epoch_rewards)
     print(f"\n{'='*70}")
@@ -92,6 +94,11 @@ if __name__=='__main__':
     print("\n✅ Training demonstration complete!")
     print("\nNote: This is a SIMPLIFIED version.")
     print("Real RLHF with PPO would actually update model weights.")
+#----------------------SAVING THE MODEL------------------------------
+    save_dir = "./models/rlhf_trained"
+    model.save_pretrained(save_dir,safe_serialization=True)
+    tokenizer.save_pretrained(save_dir)
+
 
 
 
