@@ -1,2 +1,4 @@
 RLtest/
 models/
+*.safetensors
+*.bin
