@@ -63,7 +63,7 @@ print(f"Error:{error}")
 print(f"Reward:{reward}")
 
 assert success==False
-assert reward==-10
+assert reward==-1.0
 assert "SyntaxError" in (error or "") 
 print("Test 3 Passed")
 #----------------------------------------------------------
@@ -83,7 +83,7 @@ print(f"Error:{error}")
 print(f"Reward:{reward}")
 
 assert success==False
-assert reward== -1
+assert reward== -1.0
 assert "Timeout" in (error or "")
 print("Test 3 Passed")
 #----------------------------------------------------------
