@@ -21,6 +21,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
+        pip install pytest
     
     - name: Test executor
       run: |
@@ -28,6 +29,7 @@ jobs:
     
     - name: Test API
       run: |
-        python src/api.py &
+        python src/api.py > /tmp/api.log 2>&1 &
         sleep 5
-        curl http://localhost:8000/health
+        curl http://localhost:8000/health || exit 1
+        pkill -f "python src/api.py"
