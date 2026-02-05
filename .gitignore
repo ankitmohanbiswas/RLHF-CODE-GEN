@@ -1,4 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environments
+venv/
 RLtest/
-models/
-*.safetensors
+env/
+ENV/
+
+# PyTorch & Model Files
+*.pth
+*.pt
 *.bin
+*.safetensors
+models/*
+!models/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Data (if large)
+data/*.csv
+data/*.json
+!data/problems.json
+
+# Temporary
+*.tmp
+temp/
