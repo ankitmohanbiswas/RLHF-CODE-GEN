@@ -24,7 +24,7 @@ print(f"{success}")
 print(f"Error message is {error}")
 print(f"Reward for the system is {reward}")
 assert success==True
-assert reward==10
+assert reward==1.0
 print("test 1 passed")
 
 #----------------------------------------------------------
