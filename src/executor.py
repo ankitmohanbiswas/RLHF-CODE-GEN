@@ -134,7 +134,7 @@ class CodeExecutor:
                 os.unlink(temp_file)
 
 
-def load_problems(path: str = "data/problems.json") -> list:
+def load_problems(path:str ="data/problems.json") -> list:
     """
     Load coding problems from JSON dataset.
     

@@ -2,7 +2,7 @@
 FAST API deployment for the trained model
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException,BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -94,6 +94,15 @@ def get_problems():
         "count": len(problems),
         "problems": problems
     }
+
+@app.post("/train")
+def train(background_tasks: BackgroundTasks):
+    background_tasks.add_task(run_training)
+    return {"message": "PPO training started in background"}
+
+def run_training():
+    import subprocess
+    subprocess.run(["python", "src/train_rlhf.py"])
 
 @app.post("/generate", response_model=GenerateResponse)
 def generate(request: GenerateRequest):
